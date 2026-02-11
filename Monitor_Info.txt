@@ -1,0 +1,79 @@
+using System;
+using System.Diagnostics;
+using System.Text;
+using System.Windows.Forms;
+
+
+namespace Monitor_Info
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // x86アプリで64bit System32に届かない場合の WoW64 対策
+            string psPath = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                ? Environment.ExpandEnvironmentVariables(@"%WINDIR%\Sysnative\WindowsPowerShell\v1.0\powershell.exe")
+                : Environment.ExpandEnvironmentVariables(@"%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe");
+
+            var psi = new ProcessStartInfo
+            {
+                FileName = psPath,
+                UseShellExecute = false,                 // リダイレクトには必須
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                StandardErrorEncoding = Encoding.UTF8
+            };
+
+            // ★ ここに Arguments を設定（PowerShellでモニター情報取得）
+            psi.Arguments =
+  "-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command " +
+  "\"Write-Output 'Manufacturer     Model         SerialNumber'; " +
+  " Write-Output '------------     -----         ------------'; " +
+  " Get-CimInstance -Namespace root\\wmi -ClassName WmiMonitorID | " +
+  " ForEach-Object { " +
+  "   $m = [Text.Encoding]::ASCII.GetString($_.ManufacturerName).Trim([char]0); " +
+  "   $model = [Text.Encoding]::ASCII.GetString($_.UserFriendlyName).Trim([char]0); " +
+  "   $sn = [Text.Encoding]::ASCII.GetString($_.SerialNumberID).Trim([char]0); " +
+  "   Write-Output ('{0,-15} {1,-12} {2}' -f $m, $model, $sn) " +
+  " }\"";
+
+
+
+
+            try
+            {
+                using (var process = new Process { StartInfo = psi })
+                {
+                    process.Start();
+
+                    // 同期で読み取り（このコマンドは短時間で終わる想定）
+                    string stdout = process.StandardOutput.ReadToEnd();
+                    string stderr = process.StandardError.ReadToEnd();
+
+                    process.WaitForExit();
+
+                    if (process.ExitCode == 0)
+                    {
+                        textBox1.Text = stdout.TrimEnd();
+                    }
+                    else
+                    {
+                        textBox1.Text = "[PowerShell Error]\r\n" + stderr;
+                    }
+                }
+            }
+            catch
+            {
+                // 例外時は終了（ユーザー方針）
+                return;
+            }
+        }
+    }
+}
