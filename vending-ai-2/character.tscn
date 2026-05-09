@@ -1,0 +1,100 @@
+[gd_scene format=3 uid="uid://blms50gfyhq1o"]
+
+[ext_resource type="Script" uid="uid://cswq2hebx83vm" path="res://character.gd" id="1_px5sl"]
+[ext_resource type="Texture2D" uid="uid://dbd6ycvypdb1f" path="res://blink.jpg" id="2_0qfo5"]
+[ext_resource type="Texture2D" uid="uid://l86qsswoej34" path="res://blink3.jpg" id="2_wdpcj"]
+[ext_resource type="Texture2D" uid="uid://lkjojan7urps" path="res://blink2.jpg" id="2_yxww1"]
+[ext_resource type="Texture2D" uid="uid://bh4ali7evphi7" path="res://idle.jpg" id="3_yxww1"]
+[ext_resource type="Texture2D" uid="uid://bb4chrx1u7y3" path="res://talk_open.jpg" id="4_wdpcj"]
+[ext_resource type="Texture2D" uid="uid://dj65s53vbec6x" path="res://talk_close.jpg" id="5_qi5as"]
+[ext_resource type="Texture2D" uid="uid://ccxdjsj6chhbf" path="res://talk_open2.jpg" id="7_yxww1"]
+[ext_resource type="Texture2D" uid="uid://bxcatluvikyav" path="res://talk_close2.jpg" id="9_qi5as"]
+[ext_resource type="AudioStream" uid="uid://dkxjq4o77hues" path="res://irassyaimase.mp3" id="10_jb3kq"]
+[ext_resource type="AudioStream" uid="uid://dg3w1nxv0fsj3" path="res://soldout.mp3" id="11_c1b4b"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jb3kq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_wdpcj")
+}],
+"loop": true,
+"name": &"blink",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_yxww1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_0qfo5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_wdpcj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_qi5as")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_yxww1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_yxww1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_wdpcj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_qi5as")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_yxww1")
+}],
+"loop": true,
+"name": &"error",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_qi5as")
+}],
+"loop": true,
+"name": &"error2",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_yxww1")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_wdpcj")
+}],
+"loop": true,
+"name": &"talk",
+"speed": 6.0
+}]
+
+[node name="Character" type="Node2D" unique_id=1977932172]
+script = ExtResource("1_px5sl")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=997170560]
+position = Vector2(470, 603.5)
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_jb3kq")
+animation = &"error2"
+
+[node name="irassyaimase" type="AudioStreamPlayer" parent="." unique_id=1561273390]
+stream = ExtResource("10_jb3kq")
+
+[node name="soldout" type="AudioStreamPlayer" parent="." unique_id=1838057341]
+stream = ExtResource("11_c1b4b")
